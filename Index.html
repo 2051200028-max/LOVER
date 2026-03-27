@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>...</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: -apple-system;
+    background: black;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* 🐱 mèo ở màn hình khóa */
+.lock {
+    font-size: 80px;
+    cursor: pointer;
+}
+
+/* nội dung chính */
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    text-align: center;
+    display: none;
+    z-index: 2;
+}
+
+img {
+    width: 200px;
+    height: 200px;
+    border-radius: 20px;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.cat {
+    font-size: 70px;
+    cursor: pointer;
+}
+
+#result {
+    margin-top: 10px;
+    font-size: 18px;
+    color: #ff4757;
+    font-weight: bold;
+    display: none;
+}
+
+/* 💖 tim */
+.heart {
+    position: absolute;
+    color: red;
+    animation: floatUp 4s linear infinite;
+}
+
+@keyframes floatUp {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-800px); opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🐱 màn hình giả -->
+<div id="lockScreen" class="lock" onclick="unlock()">🐱</div>
+
+<!-- 💖 nội dung thật -->
+<div class="card" id="main">
+    <img src="https://i.imgur.com/your-image.jpg">
+    <div class="cat" onclick="toggleLove()">🐱</div>
+    <div id="result"></div>
+</div>
+
+<script>
+
+// 🔐 PASSWORD
+function unlock() {
+    let pass = prompt("😏");
+
+    if (pass === "1210") {
+        document.body.style.background = "linear-gradient(135deg,#ff9a9e,#fad0c4)";
+        document.getElementById("lockScreen").style.display = "none";
+        document.getElementById("main").style.display = "block";
+    } else {
+        alert("Sai rồi 😶");
+    }
+}
+
+// ⏱️ TIME + 💖 EFFECT
+let startDate = new Date("2025-10-12T00:00:00");
+
+let running = false;
+let timeInterval = null;
+let heartInterval = null;
+
+function toggleLove() {
+
+    if (!running) {
+        running = true;
+        document.getElementById("result").style.display = "block";
+
+        timeInterval = setInterval(() => {
+            let now = new Date();
+            let diff = now - startDate;
+
+            let seconds = Math.floor(diff / 1000);
+            let minutes = Math.floor(seconds / 60);
+            let hours = Math.floor(minutes / 60);
+            let days = Math.floor(hours / 24);
+
+            let years = Math.floor(days / 365);
+            let months = Math.floor((days % 365) / 30);
+            let remainingDays = days % 30;
+
+            document.getElementById("result").innerHTML =
+                years + " năm " +
+                months + " tháng " +
+                remainingDays + " ngày <br>" +
+                (hours % 24) + " giờ " +
+                (minutes % 60) + " phút " +
+                (seconds % 60) + " giây ❤️";
+        }, 1000);
+
+        heartInterval = setInterval(createHeart, 300);
+
+    } else {
+        running = false;
+
+        clearInterval(timeInterval);
+        clearInterval(heartInterval);
+
+        document.getElementById("result").style.display = "none";
+
+        document.querySelectorAll(".heart").forEach(h => h.remove());
+    }
+}
+
+// 💖 tim bay
+function createHeart() {
+    let heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "💖";
+
+    heart.style.left = Math.random() * window.innerWidth + "px";
+    heart.style.fontSize = (15 + Math.random() * 25) + "px";
+
+    document.body.appendChild(heart);
+
+    setTimeout(() => heart.remove(), 4000);
+}
+
+</script>
+
+</body>
+</html>
